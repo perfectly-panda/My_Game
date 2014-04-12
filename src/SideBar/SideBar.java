@@ -7,7 +7,6 @@ import java.awt.Image;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import Items.BasicPotion;
@@ -17,12 +16,12 @@ import MainFiles.MainClass;
 public class SideBar extends JPanel{
 	
 	MainClass mc;
-	JButton buttons;
+	Image buttons;
 	Image textBox;
 	
 	public SideBar(MainClass main){
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));	
-		buttons = new JButton("testing");
+		buttons = main.getBIL().loadImage("/Resources/ButtonBank.png");
 		//this.add(buttons);
 		Dimension preferedSize = new Dimension(200,600);
 		this.setPreferredSize(preferedSize);
@@ -56,7 +55,7 @@ public class SideBar extends JPanel{
 		g.drawString("Gold: " + mc.getPlayer().getCurrentGold(), 40, 180);
 		
 		//shop
-		//g.drawImage(buttons, 815, 400, 180, 162, mc);
+		g.drawImage(buttons, 10, 400, 180, 162, mc);
 
 		
 	}

@@ -14,10 +14,11 @@ import MainFiles.MainClass;
 public class BottomBar extends JPanel {
 	
 	Image background;
+	MainClass main;
 	
 	public BottomBar(MainClass mc){
 		background = mc.getBIL().loadImage("/Resources/diffuse.png");
-		
+		main = mc;
 		this.setBackground(Color.YELLOW);
 		Dimension preferedSize = new Dimension(1000,100);
 		this.setPreferredSize(preferedSize);
@@ -26,7 +27,7 @@ public class BottomBar extends JPanel {
 		this.setOpaque(false);
 		this.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.DARK_GRAY));
 	}
-	/*
+	
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);
 
@@ -35,16 +36,16 @@ public class BottomBar extends JPanel {
 		//g.drawImage(mc.inv.getInventorySlot(0).getItemImage(), 25, 625, 65, 65,  mc);
 		g.setColor(Color.WHITE);
 		for(int i = 0; i < 6; i++){
-			String s = String.valueOf(mc.getPlayer().getInv().getInventorySlot(i).getCurrentStack());
+			String s = String.valueOf(main.getPlayer().getInv().getInventorySlot(i).getCurrentStack());
 			
-			g.drawImage(mc.getPlayer().getInv().getInventorySlot(i).getItemImage(), 25 + (i*85), 625, 65, 65,  mc);
-			if (mc.getPlayer().getInv().getInventorySlot(i).getCurrentStack() != 0){
-				g.drawString(s, 75 + (i * 85), 640);
+			g.drawImage(main.getPlayer().getInv().getInventorySlot(i).getItemImage(), 25 + (i*85), 10, 50, 50,  main);
+			if (main.getPlayer().getInv().getInventorySlot(i).getCurrentStack() != 0){
+				g.drawString(s, 60 + (i * 85), 25);
 			}
 		}
 
 		
-	}*/
+	}
 	
 	public void update(MainClass mc){
 		
