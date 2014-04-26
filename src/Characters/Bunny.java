@@ -8,7 +8,11 @@ public class Bunny extends Monster{
 
 	public Bunny(){}
 	
-	public void createMonster(int i, int j, MainClass mc) {
+	public Bunny(MainClass mc){
+		createMonster(mc);
+	}
+	
+	public void createMonster(MainClass mc) {
 		//set stats
 		this.setTotalHP(5);
 		this.setCurrentHP(this.getTotalHP());
@@ -22,20 +26,12 @@ public class Bunny extends Monster{
 		this.setXpModifier(1);
 		this.setGold(1);
 		
-		//set sprite
-		this.setTopSpriteX(24);
-		this.setTopSpriteY(24);
-		this.setBottomSpriteX(49);
-		this.setBottomSpriteY(49);
-		this.setSpriteSheet(mc.mapTiles);
+		//create character image class
+		this.charClass = new CharClass(mc.getMapTiles().getSubimage(25, 25, 25, 25));
 		
 		this.setEImage("/Resources/Bunny.png");
 		
 		this.setCExit(false);
-		
-		//set starting location
-		this.setX(i);
-		this.setY(j);
 		
 		//create deck
 		this.createDeck(5);
@@ -54,22 +50,20 @@ public class Bunny extends Monster{
 		int randomNum = 1 + (int)(Math.random() * ((25 - 1) + 1));
 		
 		switch(randomNum){
-			case 1: this.moveRight();
-				this.setLast(1);
-				break;
-			case 2: this.moveLeft();
-				this.setLast(3);
-				break;
-			case 3: this.moveUp();
-				this.setLast(4);
-				break;
-			case 4: this.moveDown();
-				this.setLast(2);
-				break;
-			default: break;
+		case 1: this.moveRight();
+			mh.checkForCollsion(this);
+			break;
+		case 2: this.moveLeft();
+			mh.checkForCollsion(this);
+			break;
+		case 3: this.moveUp();
+			mh.checkForCollsion(this);
+			break;
+		case 4: this.moveDown();
+			mh.checkForCollsion(this);
+			break;
+		default: break;
 		}
-		
-		mh.checkForCollsion(this, mc);
 	}
 	
 }

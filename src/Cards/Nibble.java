@@ -7,6 +7,6 @@ public class Nibble extends Cards {
 		setCardValue(1);
 		setCardCost(1);
 		setCardDamage(1);
-		setCardImage("/Resources/Nibble.jpg");
+		setCardImage("/Resources/Cards/Nibble.jpg");
 	}
 }

@@ -9,7 +9,7 @@ public class BasicPotion extends Item{
 	public BasicPotion(){
 		this.setItemName("Basic Potion");
 		this.setCurrentStack(0);
-		this.setMaxStack(99);
+		this.setMaxStack(9);
 		this.setHpReturned(10);
 		
 		this.setItemImage(this.bil.loadImage("/Resources/itemIcons/glitch-icon-70.png"));

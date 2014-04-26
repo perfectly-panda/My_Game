@@ -14,9 +14,7 @@ public class Monster extends Character{
 		
 	}
 	
-	public void createMonster(int i, int j, MainClass mc) {
-		this.setX(i);
-		this.setY(j);
+	public void createMonster(MainClass mc) {
 		this.setAggroArea(0);
 		this.setAggroed(false);
 		
@@ -40,8 +38,8 @@ public class Monster extends Character{
 	}
 	
 	public void checkAggro(MapHandler mh, Player p){
-		int ca;
-		ca = mh.mapGrid(this.getAggroArea()) + 1;
+		/*int ca;
+		//ca = mh.mapGrid(this.getAggroArea()) + 1;
 		int pX = p.getX();
 		int pY = p.getY();
 		int tX = this.getX();
@@ -52,12 +50,15 @@ public class Monster extends Character{
 		else{
 			this.setAggroed(false);
 		}
-
+*/
 	}
 	
 	public void update(Player p, MapHandler mh, MainClass mc){
 		//System.out.println("monsters turn");
 		p.setCMove(false);
+		if (this.getAlive()== false){
+			this.charClass.setVisible(false);
+		}
 		
 		if (aggroArea != 0){
 			
@@ -90,7 +91,7 @@ public class Monster extends Character{
 		int tY = this.getY();
 		
 		int randomNum = 1 + (int)(Math.random() * ((2 - 1) + 1));
-		int ca = mh.mapGrid(this.getAggroArea()) + 1;
+		/*int ca = mh.mapGrid(this.getAggroArea()) + 1;
 		
 		//pX-tX < ca && pX-tX > -ca && pY-tY < ca && pY-tY > -ca
 		if(pX-tX < ca && pX-tX > 0 && pY-tY < ca && pY-tY > 0){
@@ -150,12 +151,12 @@ public class Monster extends Character{
 			}
 		}
 		
-		mh.checkForCollsion(this, mc);
+		mh.checkForCollsion(this);
 		
 		if (pX == tX && pY == tY){
 			//TODO head to encounter
 		}
-	
+	*/
 	}
 	
 	public void takeDamage(int d)

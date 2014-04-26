@@ -1,6 +1,5 @@
 package Characters;
 
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
@@ -40,13 +39,8 @@ public class Player extends Character implements ActionListener, Serializable{
 		this.setLevel(1);
 		this.setCurrentGold(100);
 		
-		this.setTopSpriteX(0);
-		this.setTopSpriteY(24);
-		this.setBottomSpriteX(24);
-		this.setBottomSpriteY(49);
-		this.setSpriteSheet(mc.mapTiles);
-		
 		this.setEImage("/Resources/Player.png");
+		this.charClass = new CharClass(mc.getMapTiles().getSubimage(0, 25, 25, 25));
 		
 		this.setCExit(true);
 		
@@ -83,35 +77,25 @@ public class Player extends Character implements ActionListener, Serializable{
 			if (keyPress == 68 || keyPress == 39)
 			{
 				this.moveRight();
-				this.setLast(1);
 				keyPress = 0;
 			}
 			else if (keyPress == 65 || keyPress == 37)
 			{
 				this.moveLeft();
-				this.setLast(3);
 				keyPress = 0;
 			}
 			else if (keyPress == 87 || keyPress == 38)
 			{
 				this.moveUp();
-				this.setLast(4);
 				keyPress = 0;
 			}
 			else if (keyPress == 83 || keyPress == 40)
 			{
 				this.moveDown();
-				this.setLast(2);
 				keyPress = 0;
 			}
 			else {keyPress = 0;}
 		}
-	}
-
-	public void paintMap(Graphics g, MainClass mc) {
-    	g.drawImage(this.getSpriteSheet(), this.getX(), this.getY(), this.getX()+25, this.getY()+25,
-    				this.getTopSpriteX(), this.getTopSpriteY(),
-    				this.getBottomSpriteX(), this.getBottomSpriteY(), null);
 	}
 	
 	

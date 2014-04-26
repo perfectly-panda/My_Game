@@ -14,7 +14,6 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -43,22 +42,20 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 	
 	private BufferedImageLoader loader;
 	
-	public BufferedImage mapTiles;
+	private BufferedImage mapTiles;
 	private Image background;
-	JLabel backgroundLabel;
-	JPanel backgroundPanel;
-	JPanel foregroundPanel;
-	JPanel mainPanel;
-	JLayeredPane thePane;
+	private JLabel backgroundLabel;
+	private JPanel backgroundPanel;
+	private JPanel foregroundPanel;
+	private JPanel mainPanel;
+	private JLayeredPane thePane;
 	
-	JButton testing;
-	
-	public MapHandler mh;
+	private MapHandler mh;
 	private Player p;
-	public Monster m;
-	public Encounter enc;
-	public SideBar sb;
-	public BottomBar bb;
+	private Monster m;
+	private Encounter enc;
+	private SideBar sb;
+	private BottomBar bb;
 	//public SaveGame sg;
 	
 	int keys;
@@ -86,12 +83,6 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 		thePane = new JLayeredPane();
 		thePane.setPreferredSize(size);
 		this.add(thePane, BorderLayout.PAGE_START);
-		
-		
-		//test button
-		testing = new JButton("testing");
-		//backgroundPane.add(testing, new Integer(0));
-		testing.setBounds(0, 0, 25, 25);
 		
 		backgroundPanel = new JPanel();
 		backgroundPanel.setPreferredSize(size);
@@ -132,9 +123,10 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 		//}
 		
 		//start main classes
+		
 		mh = new MapHandler(this);
 		m = new Bunny();
-		m.createMonster(0, 0, this);
+		m.createMonster(this);
 		sb = new SideBar(this);
 		bb = new BottomBar(this);
 		enc = new Encounter(this, mh, p, m);
@@ -240,7 +232,7 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 					tmap = true;
 					tenc = false;
 				}
-				mh.update(p, this);
+				mh.update(this);
 			}
 			//encounter handler
 			else if(location == "Encounter"){
@@ -295,43 +287,6 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 		
 	}
 	
-	public int getKeys()
-	{
-		return keys;
-	}
-	
-	public String getScreen(){
-		return location;
-	}
-	
-	public void setScreen(String s){
-		location = s;
-	}
-	
-	public void setMonster(Monster monster){
-		this.m = monster;
-	}
-	
-	public void setMovable(boolean b){
-		this.movable = b;
-	}
-	
-	public int getXPos(){
-		return this.xPos;
-	}
-	
-	public void setXPos(int i){
-		this.xPos = i;
-	}
-	
-	public int getYPos(){
-		return this.yPos;
-	}
-	
-	public void setYPos(int i){
-		this.yPos = i;
-	}
-
 	@Override
 	public void mouseClicked(MouseEvent e) {
 	
@@ -364,12 +319,45 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 		
 	}
 	
+	public int getKeys()
+	{
+		return keys;
+	}
+	
+	public String getScreen(){
+		return location;
+	}
+	
+	public void setScreen(String s){
+		location = s;
+	}
+	
+	public void setMovable(boolean b){
+		this.movable = b;
+	}
+	
+	public int getXPos(){
+		return this.xPos;
+	}
+	
+	public void setXPos(int i){
+		this.xPos = i;
+	}
+	
+	public int getYPos(){
+		return this.yPos;
+	}
+	
+	public void setYPos(int i){
+		this.yPos = i;
+	}
+	
 	public Player getPlayer(){
 		return p;
 	}
 	
-	public BufferedImageLoader getBIL(){
-		return loader;
+	public MapHandler getMapHandler(){
+		return mh;
 	}
 	
 	public Encounter getEncounter(){
@@ -378,6 +366,22 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 	
 	public void setEncounter(Encounter e){
 		this.enc = e;
+	}
+	
+	public Monster getMonster(){
+		return m;
+	}
+	
+	public void setMonster(Monster monster){
+		this.m = monster;
+	}
+	
+	public BufferedImageLoader getBIL(){
+		return loader;
+	}
+	
+	public BufferedImage getMapTiles(){
+		return mapTiles;
 	}
 
 }

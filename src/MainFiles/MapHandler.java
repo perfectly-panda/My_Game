@@ -1,24 +1,20 @@
 package MainFiles;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.HashMap;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import Characters.Character;
 import Characters.Monster;
-import Characters.NPC;
 import Characters.Player;
 import Maps.TheMap;
 import Maps.firstMap;
 import Maps.secondMap;
 import Tiles.Tiles;
-import Tiles.bDirt;
-import Tiles.bGrass;
-import Tiles.bStoneBrick;
 
 public class MapHandler extends JPanel{
 	
@@ -27,181 +23,129 @@ public class MapHandler extends JPanel{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	HashMap<Integer, Tiles> tiles;
 	HashMap<Integer, TheMap> maps;
-	public Monster[] monsters;
-	public NPC[] npcs;
-	private int curMap=0;
+	private Monster[] monsters;
+	//private NPC[] npcs;
+	private int curMap=1;
 	private int maxMon=10;
-	private int maxNPC=2;
-	boolean checkXP;
-	MainClass mc;
-	Player p;
+	//private int maxNPC=2;
+	public boolean checkXP;
+	private MainClass main;
+	private Player play;
 	
-	public MapHandler(MainClass main){
+	GridBagConstraints c = new GridBagConstraints();
+	
+	public MapHandler(MainClass mc){
 		
-		mc= main;
-		p = mc.getPlayer();
+		main = mc;
+		play = main.getPlayer();
 		//set up panel
 		Dimension preferedSize = new Dimension(800, 600);
 		this.setPreferredSize(preferedSize);
 		this.setMinimumSize(preferedSize);
 		this.setMaximumSize(preferedSize);
 		this.setOpaque(false);
-		this.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.DARK_GRAY));
+		this.setLayout(new GridBagLayout());
 		
 		
 		checkXP = false;
 		
 		maps = new HashMap<Integer, TheMap>();
-		tiles = new HashMap<Integer, Tiles>();
 		monsters = new Monster[maxMon];
-		npcs = new NPC[maxNPC];
-		
-		//implement tiles
-		bStoneBrick bSB = new bStoneBrick();
-		tiles.put(0, bSB);
-		
-		bDirt bD = new bDirt();
-		tiles.put(1, bD);
-		
-		bGrass bG = new bGrass();
-		tiles.put(2, bG);
+		//npcs = new NPC[maxNPC];
 		
 		//implement maps
-		firstMap fM = new firstMap();
-		maps.put(0, fM);
+		firstMap fM = new firstMap(main);
+		maps.put(1, fM);
 		
-		secondMap sM = new secondMap();
-		maps.put(1, sM);
+		secondMap sM = new secondMap(main);
+		maps.put(2, sM);
 		
 		//start map
-		maps.get(curMap).onLoad(this, mc);
+		this.setCurMap(1, mc);
+		//add pc
+		maps.get(curMap).theTile[52].setChar1(play);
+			play.setCurTile(52);
+		
 	}
 	
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);
-		//g.setColor(getBackground());
-       // g.fillRect(0, 0, 800, 600);
-		
-		int xPos, yPos;
-		xPos = 0;
-		yPos = 0;
-		for (int col = 0; col < maps.get(curMap).getWidth(); col ++)
-		{
-			for (int row = 0; row < maps.get(curMap).getHeight(); row++)
-			{
-				g.drawImage(mc.mapTiles, xPos, yPos, xPos + 25, yPos + 25, (maps.get(curMap).getTile(col, row) * 25), 0, ((maps.get(curMap).getTile(col, row) * 25)+ 25), 25, null);
-				yPos += 25;
-			}
-			xPos += 25;
-			yPos = 0;
-		}
-		//render  player
-		p.paintMap(g, mc);
-		//render monsters
-		for (int i = 0; i < maxMon; i++) {
-			if (monsters[i] != null && monsters[i].getAlive() == true){
-				g.drawImage(monsters[i].getSpriteSheet(), monsters[i].getX(),
-						monsters[i].getY(), monsters[i].getX()+25, monsters[i].getY()+25,
-						monsters[i].getTopSpriteX(), monsters[i].getTopSpriteY(),
-						monsters[i].getBottomSpriteX(), monsters[i].getBottomSpriteY(), null);
-			}
-		}
-		for (int i = 0; i < maxNPC; i++) {
-			if (npcs[i] != null && npcs[i].getAlive() == true){
-				npcs[i].graphics(g, mc);
-				g.drawImage(npcs[i].getSpriteSheet(), npcs[i].getX(),
-						npcs[i].getY(), npcs[i].getX()+25, npcs[i].getY()+25,
-						npcs[i].getTopSpriteX(), npcs[i].getTopSpriteY(),
-						npcs[i].getBottomSpriteX(), npcs[i].getBottomSpriteY(), null);
-			}
-		}
 	}
 	
-	public void update(Player p, MainClass main)
+	public void update(MainClass main)
 	{
 		if (checkXP == true){
-			//System.out.println("xp checked");
 			while(main.getPlayer().currentXPToLevel() <= 0){
 				main.getPlayer().levelUp();
 			}
 			checkXP = false;
-		}
-		//player input
-		p.runMap(main);
-		if (p.getCMove() == true){
-			checkForCollsion(p, main);
+			play.setCMove(true);
 		}
 		
-		//when player moves, the monsters get to move
-		if (p.getCMove() == true){
+		//player input
+		play.runMap(main);
+		if (play.getCMove() == true){
+			checkForCollsion(play);
+			System.out.println(play.getCurTile());
 			for (int i = 0; i < maxMon; i++){
 				if (monsters[i] != null && monsters[i].getAlive() == true){
-					monsters[i].update(p, this, main);
-					
-					//check for encounter
-					if (monsters[i].getX() == p.getX() && monsters[i].getY() == p.getY()){
-						//System.out.println("get ready");
-						main.setMonster(monsters[i]);
-						main.enc = new Encounter(main, this, p, main.m);
-						main.enc.shuffleDecks(p, main.m);
-						main.setScreen("Encounter");
-						checkXP = true;
-					}
+					monsters[i].update(play, this, main);
 				}
 			}
-		}
-
-		
-		
-		//System.out.println(curMap);
-		
+			play.setCMove(false);
+		}	
 	}
 
-	public void checkForCollsion(Character c, MainClass main) {
-		
+	public void checkForCollsion(Character c) {
 		main.setMovable(false);
-		//get player location
-		int playerX = (int)(((c.getX())/25));
-		int playerY = (int)(((c.getY())/25));
-		//get the type that player is trying to move to
-		int loc = maps.get(curMap).getTile(playerX, playerY);
-		Tiles pTile = tiles.get(loc);
+		int newTile = c.getCurTile();
+		Tiles thisTile = maps.get(curMap).getTile(newTile);
 		
-		
-		//see if player is moving to an exit tile
-		if(c.getCExit() == true){
-			//System.out.println("its checking exit");
-			maps.get(curMap).checkExit(c.getX(), c.getY(), c, this, main);
-		}
-		
-		//check collision and move
-		boolean tileCol = pTile.getbCollision();
-		//System.out.println(tileCol);
-		if (c.getLast() == 1 && tileCol == true)
-		{
-			c.moveLeft();
-			c.setCMove(false);
-		}
-		
-		if (c.getLast() == 2 && tileCol == true)
-		{
-			c.moveUp();
-			c.setCMove(false);
-		}
-		if (c.getLast() == 3 && tileCol == true)
-		{
-			c.moveRight();
-			c.setCMove(false);
-		}
-		if (c.getLast() == 4 && tileCol == true)
-		{
-			c.moveDown();
-			c.setCMove(false);
-		}
-		else{
-			c.setCMove(true);
+		if(newTile != c.getLast()){
+			//check if there is another character in the space
+			if (thisTile.getChar1() != null){
+				if (thisTile.getChar1() instanceof Monster && c instanceof Player){
+					main.setMonster((Monster) thisTile.getChar1());
+					main.setEncounter(new Encounter(main, this, play, main.getMonster()));
+					main.getEncounter().shuffleDecks(play, main.getMonster());
+					main.setScreen("Encounter");
+				}
+				else if (thisTile.getChar1() instanceof Player && c instanceof Monster){
+					main.setMonster((Monster) c);
+					main.setEncounter(new Encounter(main, this, play, main.getMonster()));
+					main.getEncounter().shuffleDecks(play, main.getMonster());
+					main.setScreen("Encounter");
+				}
+				c.setCurTile(c.getLast());
+			}
+			//see if character in on an exit tile
+			else if (thisTile.isExitTile()){
+				if (c.getCExit()){
+					int enteranceTile = thisTile.getExitTileNumber();
+					for (int i = 0; i < maxMon; i++){
+						if (monsters[i] != null){
+							monsters[i].setAlive(false);
+							maps.get(curMap).getTile(monsters[i].getCurTile()).clearChar1();
+						}
+					}
+					setCurMap(thisTile.getExitMap(), main);
+					maps.get(curMap).getTile(enteranceTile).setChar1(c);
+					c.setCurTile(enteranceTile);
+				}
+				else{
+					c.setCurTile(c.getLast());
+				}
+			}
+			//check if character is running into a wall
+			else if (thisTile.getbCollision()){
+				c.setCurTile(c.getLast());
+			}
+			//character can move
+			else{
+				maps.get(curMap).getTile(newTile).setChar1(c);
+				maps.get(curMap).getTile(c.getLast()).clearChar1();
+			}
 		}
 		main.setMovable(true);
 	}
@@ -210,15 +154,34 @@ public class MapHandler extends JPanel{
 		return curMap;
 	}
 	
-	public void setCurMap(int curMap, MainClass main) {
-		this.curMap = curMap;
+	public void setCurMap(int cm, MainClass main) {
+		this.curMap = cm;
+		this.maps.get(curMap).reset();
+		this.removeAll();
 		maps.get(curMap).onLoad(this, main);
+		for(int j = 0; j<24; j++){
+			for (int i = 0; i<32; i++){
+				c.gridx = i;
+				c.gridy = j;
+				c.gridwidth =1;
+				c.gridheight = 1;
+				this.add(maps.get(curMap).theTile[i + (j*32)].tileClass, c);
+				//System.out.println(i);
+			}
+		}
+		this.revalidate();
 	}
 	
-	public int mapGrid(int i){
-		int newI;
-		newI = (i*25);
-		return newI;
+	public void setMonster(int i, Character m){
+		this.monsters[i] = (Monster) m;
+	}
+	
+	public Monster getMonster(int i){
+		return this.monsters[i];
+	}
+	
+	public TheMap getTheMap(){
+		return maps.get(curMap);
 	}
 
 }

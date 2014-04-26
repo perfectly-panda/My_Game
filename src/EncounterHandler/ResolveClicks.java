@@ -203,7 +203,7 @@ public class ResolveClicks {
 	public void mt(int x, int y, Encounter e, MainClass mc){
 		mc.clicked = false;
 		//change turn
-		System.out.println(e.getKeyPress());
+		//System.out.println(e.getKeyPress());
 			if (x >= 680 && x <= 744)
 			{
 				if (y >= 290 && y <= 311)
@@ -232,8 +232,9 @@ public class ResolveClicks {
 					mc.getPlayer().addXP(e.m.calculateXP());
 					mc.getPlayer().addGold(e.m.getGold());
 					mc.getPlayer().setCurrentHP(e.p.getCurrentHP());
+					mc.getMapHandler().getTheMap().getTile(e.m.getCurTile()).clearChar1();
+					mc.getMapHandler().checkXP = true;
 					mc.setScreen("Map");
-					 //System.out.println(e.p.getCurrentXP());
 				}
 			}
 			else if(k == 10)
@@ -243,8 +244,9 @@ public class ResolveClicks {
 				mc.getPlayer().addXP(e.m.calculateXP());
 				mc.getPlayer().addGold(e.m.getGold());
 				mc.getPlayer().setCurrentHP(e.p.getCurrentHP());
+				mc.getMapHandler().getTheMap().getTile(e.m.getCurTile()).clearChar1();
+				mc.getMapHandler().checkXP = true;
 				mc.setScreen("Map");
-				 //System.out.println(e.p.getCurrentXP());
 			}
 		}
 	

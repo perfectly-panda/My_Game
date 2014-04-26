@@ -1,11 +1,10 @@
 package Characters;
 
-import java.awt.Graphics;
 import java.awt.Image;
 
 import Cards.Cards;
 import MainFiles.BufferedImageLoader;
-import MainFiles.MainClass;
+import MainFiles.ImageShowingComponent;
 
 
 
@@ -16,7 +15,7 @@ public class Character {
 		private int y = 100;
 		private int dx = 25;
 		private int dy = 25;
-		private int radius = 10;
+		private int curTile= 0;
 		private int last = 1;
 		
 	//stats
@@ -37,6 +36,7 @@ public class Character {
 	//map checks
 		private boolean cMove;
 		private boolean cExit;
+		public CharClass charClass;
 	
 	//spot on spriteSheet
 	
@@ -65,14 +65,6 @@ public class Character {
 	public void setY(int y) {
 		this.y = y;
 	}
-	
-	public int getRadius() {
-		return radius;
-	}
-	
-	public void setRadius(int radius) {
-		this.radius = radius;
-	}
 	public int getDx() {
 		return dx;
 	}
@@ -94,6 +86,14 @@ public class Character {
 	
 	public void setLast(int last) {
 		this.last = last;
+	}
+	
+	public int getCurTile(){
+		return curTile;
+	}
+	
+	public void setCurTile(int i){
+		this.curTile = i;
 	}
 	
 	public int getCurrentHP(){
@@ -200,28 +200,30 @@ public class Character {
 		this.cExit = b;
 	}
 	
+	public CharClass getCharClass(){
+		return charClass;
+	}
+	
 	public void moveDown(){
-		this.setY(this.getY()+this.getDy());
+		this.setLast(this.getCurTile());
+		this.setCurTile(this.getCurTile()+32);
 	}
 	
 	public void moveUp(){
-		int newDy = this.getDy() * (-1);
-		this.setDy(newDy);
-		this.setY(this.getY()+this.getDy());
-		newDy = this.getDy() * (-1);
-		this.setDy(newDy);
+		this.setLast(this.getCurTile());
+		this.setCurTile(this.getCurTile()-32);
+		if (this.getCurTile()< 0){this.setCurTile(0);}
 	}
 	
 	public void moveRight(){
-		this.setX(this.getX()+this.getDx());
+		this.setLast(this.getCurTile());
+		this.setCurTile(this.getCurTile()+1);
 	}
 	
 	public void moveLeft(){
-		int newDx = this.getDx() * (-1);
-		this.setDx(newDx);
-		this.setX(this.getX()+this.getDx());
-		newDx = this.getDx() * (-1);
-		this.setDx(newDx);
+		this.setLast(this.getCurTile());
+		this.setCurTile(this.getCurTile()-1);
+		if (this.getCurTile()< 0){this.setCurTile(0);}
 	}
 	
 	public void takeDamage(int d)
@@ -335,8 +337,12 @@ public class Character {
 	public void update(){
 		
 	}
-	
-	public void graphics(Graphics g, MainClass mc){
-		
+
+	@SuppressWarnings("serial")
+	public class CharClass extends ImageShowingComponent {
+		CharClass(Image i){
+			this.setImage(i);
+			this.setOpaque(false);
+		}
 	}
 }

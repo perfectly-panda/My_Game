@@ -1,12 +1,15 @@
 package Tiles;
 
+import MainFiles.MainClass;
+
 public class bGrass extends Tiles
 {
-	public bGrass (){
+	public bGrass (MainClass mc){
 		bName = "grass";
-		imgX = 0;
-		imgY = 49;
 		bCollision = false;
 		tileNum = 2;
+		this.block = mc.getMapTiles().getSubimage(50, 0, 25, 25);
+		tileClass = new TileClass(block);
+		tileClass.setPreferredSize(tileClass.getPreferredSize());
 	}
 }

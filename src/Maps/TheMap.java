@@ -1,16 +1,16 @@
 package Maps;
 
-import java.awt.Graphics;
-
 import Characters.Character;
 import MainFiles.MainClass;
 import MainFiles.MapHandler;
+import Tiles.Tiles;
 
 public class TheMap {
 	public int[][] tileMap;
 	public int mWidth;
 	public int mHeight;
 	public int[] tileNum;
+	public Tiles[] theTile;
 	
 	int randomNum;
 	
@@ -19,7 +19,10 @@ public class TheMap {
 		mHeight = 24;
 		tileMap = new int[mWidth][mHeight];
 		tileNum = new int[mWidth * mHeight];
+		theTile = new Tiles[mWidth * mHeight];
 	}
+	
+	public void reset(){}
 	
 	public int[][] loadMap(int[] tN)
 	{
@@ -32,23 +35,6 @@ public class TheMap {
 			}
 		}
 		return tM;
-	}
-	
-	public void draw(Graphics g, MainClass mc){
-		int xPos, yPos;
-		xPos = 0;
-		yPos = 0;
-		for (int col = 0; col < mWidth; col ++)
-		{
-			for (int row = 0; row < mHeight; row++)
-			{
-				g.drawImage(mc.mapTiles, xPos, yPos, xPos + 25, yPos + 25, (tileMap[col][row] * 25), 0, (tileMap[col][row] * 25)+ 25, 25, null);
-				yPos += 25;
-			}
-			xPos += 25;
-			yPos = 0;
-		}
-		
 	}
 	
 	public void checkExit(int i, int j, Character c, MapHandler mapHandler, MainClass mc){
@@ -65,9 +51,9 @@ public class TheMap {
 		return mHeight;
 	}
 	
-	public int getTile(int x, int y)
+	public Tiles getTile(int x)
 	{
-		return tileMap[x][y];
+		return theTile[x];
 	}
 
 	public void onLoad(MapHandler mh, MainClass mc) {
