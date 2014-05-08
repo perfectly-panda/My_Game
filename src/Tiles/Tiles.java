@@ -5,9 +5,9 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 
-
-import MainFiles.ImageShowingComponent;
 import Characters.Character;
+import MainFiles.ImageShowingComponent;
+import MainFiles.MainClass;
 
 
 public class Tiles {
@@ -15,24 +15,32 @@ public class Tiles {
 		public Boolean bCollision;
 		public Boolean bInside;
 		public int imgX, imgY;
-		public int tileNum;
+		public int tileX;
+		public int tileY;
 		public Boolean exitTile = false;
 		public int exitMap;
-		public int exitTileNumber;
+		public int exitTileNumberX;
+		public int exitTileNumberY;
 		public TileClass tileClass;
 		Character char1;
 		Character char2;
 		Image block;
 		
+		public Tiles(){}
 		
-		public Tiles(){};
+		public Tiles(MainClass mc){
+			this.block = mc.getMapTiles().getSubimage(75, 0, 25, 25);
+			this.bCollision = true;
+			tileClass = new TileClass(block);
+		};
 		
-		public Tiles(String n, Boolean b, int x, int y, int tN){
+		public Tiles(String n, Boolean b, int x, int y, int tX, int tY){
 			imgX = x;
 			imgY = y;
 			bName = n;
 			bCollision = b;
-			tileNum =tN;
+			tileX =tX;
+			tileX =tY;
 			tileClass = new TileClass();
 		}
 		
@@ -44,9 +52,10 @@ public class Tiles {
 			return bCollision;
 		}
 		
-		public void setExitTile(int i, int j){
+		public void setExitTile(int i, int j, int k){
 			exitMap = i;
-			exitTileNumber = j;
+			exitTileNumberX = j;
+			exitTileNumberY = k;
 			exitTile = true;	
 		}
 		
@@ -54,8 +63,11 @@ public class Tiles {
 			return exitTile;
 		}
 		
-		public int getExitTileNumber(){
-			return exitTileNumber;
+		public int getExitTileNumberX(){
+			return exitTileNumberX;
+		}
+		public int getExitTileNumberY(){
+			return exitTileNumberY;
 		}
 		
 		public int getExitMap(){
@@ -86,7 +98,7 @@ public class Tiles {
 		
 		@SuppressWarnings("serial")
 		class TileClass extends ImageShowingComponent{
-			TileClass(){			
+			TileClass(){
 			}
 			
 			TileClass(Image i){
@@ -94,6 +106,9 @@ public class Tiles {
 				this.setPreferredSize(new Dimension(25, 25));
 				this.setMaximumSize(new Dimension(25, 25));
 				this.setLayout(new GridLayout(1,1));
+				this.setVisible(true);
+				//this.setBorder(BorderFactory.createLineBorder(Color.black));
+				//System.out.println(this);
 			}
 			
 			  public void paintComponent(Graphics g) {

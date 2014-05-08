@@ -56,7 +56,9 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 	private Encounter enc;
 	private SideBar sb;
 	private BottomBar bb;
-	//public SaveGame sg;
+	
+	private WriteXMLFile writer;
+	private ReadXMLFile reader;
 	
 	int keys;
 	private int xPos=0;
@@ -117,6 +119,8 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 
 		
 		//check for saved game, if none found, create new player
+		writer = new WriteXMLFile();
+		reader = new ReadXMLFile();
 		//loadSave= sg.loadGame(this);
 		//if (loadSave == false){
 			p = new Player(this);
@@ -179,7 +183,8 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
-		//sg.loadGame(this);
+		
+		reader.loadGame(this);
 	}
 	
 	public static void main(String[] args){
@@ -382,6 +387,18 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 	
 	public BufferedImage getMapTiles(){
 		return mapTiles;
+	}
+	
+	public WriteXMLFile getWriter(){
+		return writer;
+	}
+	
+	public ReadXMLFile getReader(){
+		return reader;
+	}
+	
+	public BottomBar getBottomBar(){
+		return bb;
 	}
 
 }

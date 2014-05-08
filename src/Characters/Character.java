@@ -11,12 +11,10 @@ import MainFiles.ImageShowingComponent;
 public class Character {
 
 	//location
-		private int x = 100;
-		private int y = 100;
-		private int dx = 25;
-		private int dy = 25;
-		private int curTile= 0;
-		private int last = 1;
+		private int curTileX= 0;
+		private int curTileY= 0;
+		private int lastX = 1;
+		private int lastY = 1;
 		
 	//stats
 		private String name;
@@ -37,6 +35,7 @@ public class Character {
 		private boolean cMove;
 		private boolean cExit;
 		public CharClass charClass;
+		public CharEncounterClass charEncClass;
 	
 	//spot on spriteSheet
 	
@@ -50,50 +49,36 @@ public class Character {
 		private Image eImage;
 		private BufferedImageLoader il = new BufferedImageLoader();
 	
-	public int getX() {
-		return x;
+	public int getLastX() {
+		return lastX;
 	}
 	
-	public void setX(int x) {
-		this.x = x;
+	public void setLastX(int last) {
+		this.lastX = last;
 	}
 	
-	public int getY() {
-		return y;
+	public int getLastY() {
+		return lastY;
 	}
 	
-	public void setY(int y) {
-		this.y = y;
-	}
-	public int getDx() {
-		return dx;
-	}
-	public void setDx(int dx) {
-		this.dx = dx;
+	public void setLastY(int last) {
+		this.lastY = last;
 	}
 	
-	public int getDy() {
-		return dy;
+	public int getCurTileX(){
+		return curTileX;
 	}
 	
-	public void setDy(int dy) {
-		this.dy = dy;
+	public void setCurTileX(int i){
+		this.curTileX = i;
 	}
 	
-	public int getLast() {
-		return last;
+	public int getCurTileY(){
+		return curTileY;
 	}
 	
-	public void setLast(int last) {
-		this.last = last;
-	}
-	
-	public int getCurTile(){
-		return curTile;
-	}
-	
-	public void setCurTile(int i){
-		this.curTile = i;
+	public void setCurTileY(int i){
+		this.curTileY = i;
 	}
 	
 	public int getCurrentHP(){
@@ -205,25 +190,29 @@ public class Character {
 	}
 	
 	public void moveDown(){
-		this.setLast(this.getCurTile());
-		this.setCurTile(this.getCurTile()+32);
+		this.setLastX(this.getCurTileX());
+		this.setLastY(this.getCurTileY());
+		this.setCurTileY(this.getCurTileY()+1);
 	}
 	
 	public void moveUp(){
-		this.setLast(this.getCurTile());
-		this.setCurTile(this.getCurTile()-32);
-		if (this.getCurTile()< 0){this.setCurTile(0);}
+		this.setLastX(this.getCurTileX());
+		this.setLastY(this.getCurTileY());
+		this.setCurTileY(this.getCurTileY()-1);
+		if (this.getCurTileY()< 0){this.setCurTileY(0);}
 	}
 	
 	public void moveRight(){
-		this.setLast(this.getCurTile());
-		this.setCurTile(this.getCurTile()+1);
+		this.setLastX(this.getCurTileX());
+		this.setLastY(this.getCurTileY());
+		this.setCurTileX(this.getCurTileX()+1);
 	}
 	
 	public void moveLeft(){
-		this.setLast(this.getCurTile());
-		this.setCurTile(this.getCurTile()-1);
-		if (this.getCurTile()< 0){this.setCurTile(0);}
+		this.setLastX(this.getCurTileX());
+		this.setLastY(this.getCurTileY());
+		this.setCurTileX(this.getCurTileX()-1);
+		if (this.getCurTileX()< 0){this.setCurTileX(0);}
 	}
 	
 	public void takeDamage(int d)
@@ -341,6 +330,14 @@ public class Character {
 	@SuppressWarnings("serial")
 	public class CharClass extends ImageShowingComponent {
 		CharClass(Image i){
+			this.setImage(i);
+			this.setOpaque(false);
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	public class CharEncounterClass extends ImageShowingComponent {
+		CharEncounterClass(Image i){
 			this.setImage(i);
 			this.setOpaque(false);
 		}

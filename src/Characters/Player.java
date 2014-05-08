@@ -41,6 +41,7 @@ public class Player extends Character implements ActionListener, Serializable{
 		
 		this.setEImage("/Resources/Player.png");
 		this.charClass = new CharClass(mc.getMapTiles().getSubimage(0, 25, 25, 25));
+		this.charEncClass = new CharEncounterClass(this.getEImage());
 		
 		this.setCExit(true);
 		
@@ -174,7 +175,7 @@ public class Player extends Character implements ActionListener, Serializable{
 		 try {
 		     ByteArrayOutputStream bo = new ByteArrayOutputStream();
 		     ObjectOutputStream so = new ObjectOutputStream(bo);
-		     so.writeObject(this);
+		     so.writeObject(this.pInventory);
 		     so.flush();
 		     serializedObject = bo.toString();
 		 } catch (Exception e) {

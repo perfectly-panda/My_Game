@@ -7,7 +7,6 @@ public class bGrass extends Tiles
 	public bGrass (MainClass mc){
 		bName = "grass";
 		bCollision = false;
-		tileNum = 2;
 		this.block = mc.getMapTiles().getSubimage(50, 0, 25, 25);
 		tileClass = new TileClass(block);
 		tileClass.setPreferredSize(tileClass.getPreferredSize());

@@ -232,7 +232,7 @@ public class ResolveClicks {
 					mc.getPlayer().addXP(e.m.calculateXP());
 					mc.getPlayer().addGold(e.m.getGold());
 					mc.getPlayer().setCurrentHP(e.p.getCurrentHP());
-					mc.getMapHandler().getTheMap().getTile(e.m.getCurTile()).clearChar1();
+					mc.getMapHandler().getTheMap().getTile(e.m.getCurTileX(), e.m.getCurTileY()).clearChar1();
 					mc.getMapHandler().checkXP = true;
 					mc.setScreen("Map");
 				}
@@ -244,7 +244,7 @@ public class ResolveClicks {
 				mc.getPlayer().addXP(e.m.calculateXP());
 				mc.getPlayer().addGold(e.m.getGold());
 				mc.getPlayer().setCurrentHP(e.p.getCurrentHP());
-				mc.getMapHandler().getTheMap().getTile(e.m.getCurTile()).clearChar1();
+				mc.getMapHandler().getTheMap().getTile(e.m.getCurTileX(), e.m.getCurTileY()).clearChar1();
 				mc.getMapHandler().checkXP = true;
 				mc.setScreen("Map");
 			}

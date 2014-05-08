@@ -20,6 +20,8 @@ public class SideBar extends JPanel{
 	Image textBox;
 	JPanel buttonsCont;
 	SideBarControls buyPotion;
+	SideBarControls saveGame;
+	SideBarControls loadGame;
 	
 	
 	public SideBar(MainClass main){
@@ -49,6 +51,18 @@ public class SideBar extends JPanel{
 		buyPotion.setOpaque(false);
 		buttonsCont.add(buyPotion);
 		buyPotion.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		//add save game
+		saveGame = new SideBarControls(main.getBIL().loadImage("/Resources/SaveGame.png"));
+		saveGame.setOpaque(false);
+		buttonsCont.add(saveGame);
+		saveGame.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		//add load game
+		loadGame = new SideBarControls(main.getBIL().loadImage("/Resources/LoadGame.png"));
+		loadGame.setOpaque(false);
+		buttonsCont.add(loadGame);
+		loadGame.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		
 		
@@ -83,26 +97,19 @@ public class SideBar extends JPanel{
 	}
 	
 	public void update(MainClass mc){
-		int x = mc.getXPos();
-		int y = mc.getYPos();
 
-		//System.out.println(x + " " + y);
-		
 		BasicPotion bp = new BasicPotion();
 		
 		if(buyPotion.getClick() == true){
 			bp.buyItem(mc);
-			//System.out.println(x + " " + y);
+			System.out.println("buy potion");
 			buyPotion.setClick(false);
+		} else if (saveGame.getClick() == true){
+			mc.getWriter().saveGame(mc);
 		}
-		else if(x >= 815 && x <= 995 && y >= 454 && y <= 508 && mc.clicked == true){
-			//mc.sg.saveGame(mc);
-			mc.clicked = false;
-		}
-		else if(x >= 815 && x <= 995 && y >= 508 && y <= 562 && mc.clicked == true){
-			//mc.sg.loadGame(mc);
-			mc.clicked = false;
-		}
+		 else if (loadGame.getClick() == true){
+				mc.getReader().loadGame(mc);
+			}
 	}
 	
 	class SideBarControls extends ImageShowingComponent{

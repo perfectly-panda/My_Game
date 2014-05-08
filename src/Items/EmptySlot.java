@@ -1,5 +1,6 @@
 package Items;
 
+@SuppressWarnings("serial")
 public class EmptySlot extends Item{
 
 	public EmptySlot(){

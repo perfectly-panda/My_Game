@@ -1,5 +1,6 @@
 package MainFiles;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -32,6 +33,7 @@ public class MapHandler extends JPanel{
 	public boolean checkXP;
 	private MainClass main;
 	private Player play;
+	public Tiles blankTile;
 	
 	GridBagConstraints c = new GridBagConstraints();
 	
@@ -39,19 +41,21 @@ public class MapHandler extends JPanel{
 		
 		main = mc;
 		play = main.getPlayer();
+		blankTile = new Tiles(main);
 		//set up panel
 		Dimension preferedSize = new Dimension(800, 600);
 		this.setPreferredSize(preferedSize);
 		this.setMinimumSize(preferedSize);
 		this.setMaximumSize(preferedSize);
-		this.setOpaque(false);
+		this.setOpaque(true);
+		this.setBackground(Color.black);
 		this.setLayout(new GridBagLayout());
 		
 		
 		checkXP = false;
 		
 		maps = new HashMap<Integer, TheMap>();
-		monsters = new Monster[maxMon];
+		monsters =new Monster[maxMon];
 		//npcs = new NPC[maxNPC];
 		
 		//implement maps
@@ -64,9 +68,10 @@ public class MapHandler extends JPanel{
 		//start map
 		this.setCurMap(1, mc);
 		//add pc
-		maps.get(curMap).theTile[52].setChar1(play);
-			play.setCurTile(52);
-		
+		maps.get(curMap).theTile[16][12].setChar1(play);
+			play.setCurTileX(16);
+			play.setCurTileY(12);
+			updateCamera(play);
 	}
 	
 	protected void paintComponent(Graphics g){
@@ -87,10 +92,9 @@ public class MapHandler extends JPanel{
 		play.runMap(main);
 		if (play.getCMove() == true){
 			checkForCollsion(play);
-			System.out.println(play.getCurTile());
 			for (int i = 0; i < maxMon; i++){
-				if (monsters[i] != null && monsters[i].getAlive() == true){
-					monsters[i].update(play, this, main);
+				if (getMonster(i) != null && getMonster(i).getAlive() == true){
+					getMonster(i).update(play, this, main);
 				}
 			}
 			play.setCMove(false);
@@ -99,10 +103,11 @@ public class MapHandler extends JPanel{
 
 	public void checkForCollsion(Character c) {
 		main.setMovable(false);
-		int newTile = c.getCurTile();
-		Tiles thisTile = maps.get(curMap).getTile(newTile);
+		int newTileX = c.getCurTileX();
+		int newTileY = c.getCurTileY();
+		Tiles thisTile = maps.get(curMap).getTile(newTileX, newTileY);
 		
-		if(newTile != c.getLast()){
+		if(newTileX != c.getLastX() || newTileY != c.getLastY()){
 			//check if there is another character in the space
 			if (thisTile.getChar1() != null){
 				if (thisTile.getChar1() instanceof Monster && c instanceof Player){
@@ -117,34 +122,43 @@ public class MapHandler extends JPanel{
 					main.getEncounter().shuffleDecks(play, main.getMonster());
 					main.setScreen("Encounter");
 				}
-				c.setCurTile(c.getLast());
+				c.setCurTileX(c.getLastX());
+				c.setCurTileY(c.getLastY());
 			}
 			//see if character in on an exit tile
 			else if (thisTile.isExitTile()){
 				if (c.getCExit()){
-					int enteranceTile = thisTile.getExitTileNumber();
+					int enteranceTileX = thisTile.getExitTileNumberX();
+					int enteranceTileY = thisTile.getExitTileNumberY();
 					for (int i = 0; i < maxMon; i++){
-						if (monsters[i] != null){
-							monsters[i].setAlive(false);
-							maps.get(curMap).getTile(monsters[i].getCurTile()).clearChar1();
+						if (getMonster(i) != null){
+							getMonster(i).setAlive(false);
+							maps.get(curMap).getTile(getMonster(i).getCurTileX(), getMonster(i).getCurTileY()).clearChar1();
 						}
 					}
 					setCurMap(thisTile.getExitMap(), main);
-					maps.get(curMap).getTile(enteranceTile).setChar1(c);
-					c.setCurTile(enteranceTile);
+					maps.get(curMap).getTile(enteranceTileX, enteranceTileY).setChar1(c);
+					c.setCurTileX(enteranceTileX);
+					c.setCurTileY(enteranceTileY);
+					updateCamera(play);
 				}
 				else{
-					c.setCurTile(c.getLast());
+					c.setCurTileX(c.getLastX());
+					c.setCurTileY(c.getLastY());
 				}
 			}
 			//check if character is running into a wall
 			else if (thisTile.getbCollision()){
-				c.setCurTile(c.getLast());
+				c.setCurTileX(c.getLastX());
+				c.setCurTileY(c.getLastY());
 			}
 			//character can move
 			else{
-				maps.get(curMap).getTile(newTile).setChar1(c);
-				maps.get(curMap).getTile(c.getLast()).clearChar1();
+				maps.get(curMap).getTile(newTileX, newTileY).setChar1(c);
+				maps.get(curMap).getTile(c.getLastX(), c.getLastY()).clearChar1();
+				if(c instanceof Player){
+					updateCamera((Player) c);
+				}
 			}
 		}
 		main.setMovable(true);
@@ -159,21 +173,43 @@ public class MapHandler extends JPanel{
 		this.maps.get(curMap).reset();
 		this.removeAll();
 		maps.get(curMap).onLoad(this, main);
-		for(int j = 0; j<24; j++){
-			for (int i = 0; i<32; i++){
-				c.gridx = i;
-				c.gridy = j;
-				c.gridwidth =1;
-				c.gridheight = 1;
-				this.add(maps.get(curMap).theTile[i + (j*32)].tileClass, c);
-				//System.out.println(i);
+		updateCamera(main.getPlayer());
+		this.revalidate();
+	}
+	
+	public void updateCamera(Player play){
+		this.removeAll();
+		int playerI, playerJ;
+		for(int i = 0; i < 24; i++){
+			for(int j = 0; j < 32; j++){
+				playerI = play.getCurTileY()+i-12;
+				playerJ = play.getCurTileX()+j-16;
+				if(playerI > -1 && playerI < maps.get(curMap).getHeight() && playerJ >= 0 && playerJ < maps.get(curMap).getWidth()){
+					//System.out.println("i: " + i + " j: " + j + " true");
+					c.gridx = j;
+					c.gridy = i;
+					c.gridwidth =1;
+					c.gridheight = 1;
+					
+					//System.out.println(j + " " + i + " " + maps.get(curMap).theTile[j][i]);
+					this.add(maps.get(curMap).theTile[playerJ][playerI].tileClass, c);
+					//System.out.println(i);
+				}else{
+					//System.out.println("i: " + i + " j: " + j + " False");
+					c.gridx = j;
+					c.gridy = i;
+					c.gridwidth =1;
+					c.gridheight = 1;
+					
+					this.add(new Tiles(main).tileClass, c);
+				}
 			}
 		}
 		this.revalidate();
 	}
 	
 	public void setMonster(int i, Character m){
-		this.monsters[i] = (Monster) m;
+		monsters[i] = (Monster) m;
 	}
 	
 	public Monster getMonster(int i){
@@ -183,5 +219,11 @@ public class MapHandler extends JPanel{
 	public TheMap getTheMap(){
 		return maps.get(curMap);
 	}
+
+	public int getMaxMon() {
+		return maxMon;
+	}
+
+
 
 }
