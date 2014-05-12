@@ -28,6 +28,7 @@ public class Bunny extends Monster{
 		
 		//create character image class
 		this.charClass = new CharClass(mc.getMapTiles().getSubimage(25, 25, 25, 25));
+		charClass.setToolTipText("<html>Bunny<br>Level 1</html>");
 		
 		this.setEImage("/Resources/Bunny.png");
 		

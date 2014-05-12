@@ -229,9 +229,9 @@ public class ResolveClicks {
 			if (x >= 300 && x <= 450){
 				if (y >= 40 && y <= 140){
 					e.win = false;
-					mc.getPlayer().addXP(e.m.calculateXP());
-					mc.getPlayer().addGold(e.m.getGold());
-					mc.getPlayer().setCurrentHP(e.p.getCurrentHP());
+					MainClass.getPlayer().addXP(e.m.calculateXP());
+					MainClass.getPlayer().addGold(e.m.getGold());
+					MainClass.getPlayer().setCurrentHP(e.p.getCurrentHP());
 					mc.getMapHandler().getTheMap().getTile(e.m.getCurTileX(), e.m.getCurTileY()).clearChar1();
 					mc.getMapHandler().checkXP = true;
 					mc.setScreen("Map");
@@ -241,9 +241,9 @@ public class ResolveClicks {
 			{
 				e.win = false;
 				e.setKeyPress(0);
-				mc.getPlayer().addXP(e.m.calculateXP());
-				mc.getPlayer().addGold(e.m.getGold());
-				mc.getPlayer().setCurrentHP(e.p.getCurrentHP());
+				MainClass.getPlayer().addXP(e.m.calculateXP());
+				MainClass.getPlayer().addGold(e.m.getGold());
+				MainClass.getPlayer().setCurrentHP(e.p.getCurrentHP());
 				mc.getMapHandler().getTheMap().getTile(e.m.getCurTileX(), e.m.getCurTileY()).clearChar1();
 				mc.getMapHandler().checkXP = true;
 				mc.setScreen("Map");

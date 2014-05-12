@@ -11,7 +11,9 @@ import javax.swing.JPanel;
 
 import Characters.Character;
 import Characters.Monster;
+import Characters.NPC;
 import Characters.Player;
+import Characters.ShopKeep;
 import Maps.TheMap;
 import Maps.firstMap;
 import Maps.secondMap;
@@ -26,10 +28,10 @@ public class MapHandler extends JPanel{
 	
 	HashMap<Integer, TheMap> maps;
 	private Monster[] monsters;
-	//private NPC[] npcs;
+	private NPC[] npcs;
 	private int curMap=1;
 	private int maxMon=10;
-	//private int maxNPC=2;
+	private int maxNPC=2;
 	public boolean checkXP;
 	private MainClass main;
 	private Player play;
@@ -40,8 +42,9 @@ public class MapHandler extends JPanel{
 	public MapHandler(MainClass mc){
 		
 		main = mc;
-		play = main.getPlayer();
+		play = MainClass.getPlayer();
 		blankTile = new Tiles(main);
+		
 		//set up panel
 		Dimension preferedSize = new Dimension(800, 600);
 		this.setPreferredSize(preferedSize);
@@ -56,7 +59,7 @@ public class MapHandler extends JPanel{
 		
 		maps = new HashMap<Integer, TheMap>();
 		monsters =new Monster[maxMon];
-		//npcs = new NPC[maxNPC];
+		setNpcs(new NPC[maxNPC]);
 		
 		//implement maps
 		firstMap fM = new firstMap(main);
@@ -81,8 +84,8 @@ public class MapHandler extends JPanel{
 	public void update(MainClass main)
 	{
 		if (checkXP == true){
-			while(main.getPlayer().currentXPToLevel() <= 0){
-				main.getPlayer().levelUp();
+			while(MainClass.getPlayer().currentXPToLevel() <= 0){
+				MainClass.getPlayer().levelUp();
 			}
 			checkXP = false;
 			play.setCMove(true);
@@ -121,6 +124,10 @@ public class MapHandler extends JPanel{
 					main.setEncounter(new Encounter(main, this, play, main.getMonster()));
 					main.getEncounter().shuffleDecks(play, main.getMonster());
 					main.setScreen("Encounter");
+				}
+				if (thisTile.getChar1() instanceof ShopKeep && c instanceof Player){
+					((ShopKeep) thisTile.getChar1()).getSInventory().turnOnFrame();
+					Player.getInv().turnOnFrame();
 				}
 				c.setCurTileX(c.getLastX());
 				c.setCurTileY(c.getLastY());
@@ -173,7 +180,7 @@ public class MapHandler extends JPanel{
 		this.maps.get(curMap).reset();
 		this.removeAll();
 		maps.get(curMap).onLoad(this, main);
-		updateCamera(main.getPlayer());
+		updateCamera(MainClass.getPlayer());
 		this.revalidate();
 	}
 	
@@ -208,8 +215,8 @@ public class MapHandler extends JPanel{
 		this.revalidate();
 	}
 	
-	public void setMonster(int i, Character m){
-		monsters[i] = (Monster) m;
+	public void setMonster(int i, Monster m){
+		monsters[i] = m;
 	}
 	
 	public Monster getMonster(int i){
@@ -224,6 +231,20 @@ public class MapHandler extends JPanel{
 		return maxMon;
 	}
 
+	public NPC[] getNpcs() {
+		return npcs;
+	}
 
+	public void setNpcs(NPC[] npcs) {
+		this.npcs = npcs;
+	}
+
+	public void setNPC(int i, NPC m){
+		getNpcs()[i] = m;
+	}
+	
+	public NPC getNPC(int i){
+		return this.npcs[i];
+	}
 
 }

@@ -1,9 +1,10 @@
 package Maps;
 
 import Characters.Bunny;
+import Characters.Monster;
 import Characters.Mouse;
-import Items.BasicPotion;
-import Items.Inventory;
+import Inventory.Inventory;
+import Items.Potions.BasicHealthPotion;
 import MainFiles.MainClass;
 import MainFiles.MapHandler;
 import Tiles.Tiles;
@@ -238,16 +239,16 @@ public class secondMap extends TheMap {
 	public void onLoad(MapHandler mh, MainClass mc){
 		//System.out.println("map 1");
 		Inventory inv = new Inventory(1);
-		BasicPotion p = new BasicPotion();
+		BasicHealthPotion p = new BasicHealthPotion();
 		inv.setInventorySlot(p, 0);
 		theTile[2][2].setChar1(new Bunny(mc));
 			theTile[2][2].getChar1().setCurTileX(2);
 			theTile[2][2].getChar1().setCurTileY(2);
-			mh.setMonster(0, theTile[2][2].getChar1());
+			mh.setMonster(0, (Monster) theTile[2][2].getChar1());
 		theTile[10][2].setChar1(new Mouse(mc));
 			theTile[10][2].getChar1().setCurTileX(10);
 			theTile[10][2].getChar1().setCurTileY(2);
-			mh.setMonster(1, theTile[10][2].getChar1());
+			mh.setMonster(1, (Monster) theTile[10][2].getChar1());
 		//mh.npcs[0] = new ShopKeep(inv, "Bob", mc);
 	}
 }

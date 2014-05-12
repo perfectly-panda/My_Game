@@ -231,8 +231,6 @@ public class Encounter extends JPanel{
 			
 			//System.out.println("Painting encounter");
 			
-			g.setFont(main.myFont2);
-			
 			g.drawImage(playerImage, 100, 40, 200, 200, main);
 			g.drawImage(monsterImage, 500, 40, 200, 200, main);
 			g.drawImage(monsterAttackImage, 300, 40, main);

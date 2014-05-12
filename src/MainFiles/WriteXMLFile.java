@@ -13,6 +13,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import Characters.Player;
  
 public class WriteXMLFile {
  
@@ -37,31 +39,31 @@ public class WriteXMLFile {
 		
 		//add stats
 		Element totalHP = doc.createElement("Total_HP");
-		totalHP.appendChild(doc.createTextNode(Integer.toString(mc.getPlayer().getTotalHP())));
+		totalHP.appendChild(doc.createTextNode(Integer.toString(MainClass.getPlayer().getTotalHP())));
 		player.appendChild(totalHP);
 		
 		Element currentHP = doc.createElement("Current_HP");
-		currentHP.appendChild(doc.createTextNode(Integer.toString(mc.getPlayer().getCurrentHP())));
+		currentHP.appendChild(doc.createTextNode(Integer.toString(MainClass.getPlayer().getCurrentHP())));
 		player.appendChild(currentHP);
 		
 		Element attack = doc.createElement("Attack");
-		attack.appendChild(doc.createTextNode(Integer.toString(mc.getPlayer().getAttack())));
+		attack.appendChild(doc.createTextNode(Integer.toString(MainClass.getPlayer().getAttack())));
 		player.appendChild(attack);
 		
 		Element defence = doc.createElement("Defence");
-		defence.appendChild(doc.createTextNode(Integer.toString(mc.getPlayer().getDefence())));
+		defence.appendChild(doc.createTextNode(Integer.toString(MainClass.getPlayer().getDefence())));
 		player.appendChild(defence);
 		
 		Element cardsPerTurn = doc.createElement("Cards_per_Turn");
-		cardsPerTurn.appendChild(doc.createTextNode(Integer.toString(mc.getPlayer().getCardsPerTurn())));
+		cardsPerTurn.appendChild(doc.createTextNode(Integer.toString(MainClass.getPlayer().getCardsPerTurn())));
 		player.appendChild(cardsPerTurn);
 
 		Element level = doc.createElement("Level");
-		level.appendChild(doc.createTextNode(Integer.toString(mc.getPlayer().getLevel())));
+		level.appendChild(doc.createTextNode(Integer.toString(MainClass.getPlayer().getLevel())));
 		player.appendChild(level);
 		
 		Element gold = doc.createElement("Gold");
-		gold.appendChild(doc.createTextNode(Integer.toString(mc.getPlayer().getCurrentGold())));
+		gold.appendChild(doc.createTextNode(Integer.toString(MainClass.getPlayer().getCurrentGold())));
 		player.appendChild(gold);
 		
 		/*
@@ -73,11 +75,11 @@ public class WriteXMLFile {
 		rootElement.appendChild(location);
 				
 		Element playerX = doc.createElement("PlayerX");
-		playerX.appendChild(doc.createTextNode(Integer.toString(mc.getPlayer().getCurTileX())));
+		playerX.appendChild(doc.createTextNode(Integer.toString(MainClass.getPlayer().getCurTileX())));
 		location.appendChild(playerX);
 		
 		Element playerY = doc.createElement("PlayerY");
-		playerY.appendChild(doc.createTextNode(Integer.toString(mc.getPlayer().getCurTileY())));
+		playerY.appendChild(doc.createTextNode(Integer.toString(MainClass.getPlayer().getCurTileY())));
 		location.appendChild(playerY);
 		
 		Element currentMap = doc.createElement("CurrentMap");
@@ -88,9 +90,9 @@ public class WriteXMLFile {
 		Element inventory = doc.createElement("Inventory");
 		rootElement.appendChild(inventory);
 		
-		for (int i = 0; i < mc.getPlayer().getInv().getInventorySize(); i++){
+		for (int i = 0; i < Player.getInv().getInventorySize(); i++){
 			Element item = doc.createElement("item");
-			item.appendChild(doc.createTextNode(mc.getPlayer().getInv().getInventorySlotName(i)));
+			item.appendChild(doc.createTextNode(Player.getInv().getInventorySlotName(i)));
 			inventory.appendChild(item);
 		}
 		

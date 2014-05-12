@@ -9,7 +9,7 @@ import java.awt.Image;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import Items.BasicPotion;
+import Characters.Player;
 import MainFiles.ImageShowingComponent;
 import MainFiles.MainClass;
 
@@ -19,9 +19,9 @@ public class SideBar extends JPanel{
 	MainClass mc;
 	Image textBox;
 	JPanel buttonsCont;
-	SideBarControls buyPotion;
 	SideBarControls saveGame;
 	SideBarControls loadGame;
+	SideBarControls inventory;
 	
 	
 	public SideBar(MainClass main){
@@ -45,13 +45,6 @@ public class SideBar extends JPanel{
 		buttonsCont.setOpaque(false);
 		this.add(buttonsCont);
 		
-		
-		//add buy potion
-		buyPotion = new SideBarControls(main.getBIL().loadImage("/Resources/buyPotion.png"));
-		buyPotion.setOpaque(false);
-		buttonsCont.add(buyPotion);
-		buyPotion.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
 		//add save game
 		saveGame = new SideBarControls(main.getBIL().loadImage("/Resources/SaveGame.png"));
 		saveGame.setOpaque(false);
@@ -63,6 +56,12 @@ public class SideBar extends JPanel{
 		loadGame.setOpaque(false);
 		buttonsCont.add(loadGame);
 		loadGame.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		//add load game
+		inventory = new SideBarControls(main.getBIL().loadImage("/Resources/LoadGame.png"));
+		inventory.setOpaque(false);
+		buttonsCont.add(inventory);
+		inventory.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		
 		
@@ -79,37 +78,26 @@ public class SideBar extends JPanel{
         g.fillRect(7, 410, 180, 180);
         
 		g.setColor(Color.black);
-		g.setFont(mc.myFont2);
 		
 		//g.drawImage(textBox, 10, 5, 190, 200, mc);
-		g.drawString("Current Level: " + mc.getPlayer().getLevel(), 15, 435);
-		g.drawString("XP to Level: " + mc.getPlayer().currentXPToLevel(), 15, 455);
+		g.drawString("Current Level: " + MainClass.getPlayer().getLevel(), 15, 435);
+		g.drawString("XP to Level: " + MainClass.getPlayer().currentXPToLevel(), 15, 455);
 		
-		g.drawString("Attack: " + mc.getPlayer().getAttack(), 15, 495);
-		g.drawString("Defence: " + mc.getPlayer().getDefence(), 15, 515);
-		g.drawString("HP: " + mc.getPlayer().getCurrentHP() + " of " + mc.getPlayer().getTotalHP(), 15, 535);
-		g.drawString("Gold: " + mc.getPlayer().getCurrentGold(), 15, 575);
-		
-		//shop
-		//g.drawImage(buttons, 10, 400, 180, 162, mc);
-
-		
+		g.drawString("Attack: " + MainClass.getPlayer().getAttack(), 15, 495);
+		g.drawString("Defence: " + MainClass.getPlayer().getDefence(), 15, 515);
+		g.drawString("HP: " + MainClass.getPlayer().getCurrentHP() + " of " + MainClass.getPlayer().getTotalHP(), 15, 535);
+		g.drawString("Gold: " + MainClass.getPlayer().getCurrentGold(), 15, 575);	
 	}
 	
 	public void update(MainClass mc){
-
-		BasicPotion bp = new BasicPotion();
 		
-		if(buyPotion.getClick() == true){
-			bp.buyItem(mc);
-			System.out.println("buy potion");
-			buyPotion.setClick(false);
-		} else if (saveGame.getClick() == true){
+		if (saveGame.getClick() == true){
 			mc.getWriter().saveGame(mc);
-		}
-		 else if (loadGame.getClick() == true){
+		} else if (loadGame.getClick() == true){
 				mc.getReader().loadGame(mc);
-			}
+		} else if (inventory.getClick() == true){
+			Player.getInv().turnOnFrame();
+		}
 	}
 	
 	class SideBarControls extends ImageShowingComponent{

@@ -2,7 +2,6 @@ package MainFiles;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -11,13 +10,17 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
+import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import BottomBar.BottomBar;
 import Characters.Bunny;
@@ -28,19 +31,19 @@ import SideBar.SideBar;
 /* Credits:
  *  http://opengameart.org/ license: Public Domain
  * Textures: rubberduck, para, Duion; Buttons: Kindland; Round Animals: ryan.dansie; RPG Items: anubisky
- * RussPupp_rpg: Russpuppy; Glitch Icons: rubberduck; Potions: Buch; Medals: Kenney
+ * RussPupp_rpg: Russpuppy; Glitch Icons: rubberduck; Potions: Buch; Medals: Kenney character sprites: icedman
  * 
  * "Part of (or All) the graphic tiles used in this program is the Public domain roguelike tileset "RLTiles". Some of the tiles have been modified by YOURNAME. You can find the original tileset at: http://rltiles.sf.net You can find Dungeon Crawl Stone Soup modified tilesets at: http://code.google.com/p/crawl-tiles/downloads/list"
  */
 
 @SuppressWarnings("serial")
-public class MainClass extends JFrame implements Runnable, KeyListener, MouseListener
+public class MainClass extends JFrame implements Runnable, KeyListener, MouseListener, WindowListener
 {
 	Dimension size = new Dimension(1000, 700);
 	public boolean running = false;
 	public boolean loadSave;
 	
-	private BufferedImageLoader loader;
+	private static BufferedImageLoader loader;
 	
 	private BufferedImage mapTiles;
 	private Image background;
@@ -48,14 +51,16 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 	private JPanel backgroundPanel;
 	private JPanel foregroundPanel;
 	private JPanel mainPanel;
-	private JLayeredPane thePane;
 	
-	private MapHandler mh;
-	private Player p;
+	private JLayeredPane thePane;
+	private JDesktopPane allTheWindows;
+	
+	private static MapHandler mh;
+	private static Player p;
 	private Monster m;
 	private Encounter enc;
-	private SideBar sb;
-	private BottomBar bb;
+	private static SideBar sb;
+	private static BottomBar bb;
 	
 	private WriteXMLFile writer;
 	private ReadXMLFile reader;
@@ -69,10 +74,12 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 	private boolean tenc;
 	String location;
 	
-	public Font myFont1;
-	public Font myFont2;
+	private static boolean storeOpen;
+	private boolean active;
 	
-	public MainClass() {
+	public  MainClass() {
+		setStoreOpen(false);
+		
 		//setup the frame
 		this.setMinimumSize(size);
 		this.setMaximumSize(size);
@@ -102,6 +109,14 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 		foregroundPanel.setOpaque(false);
 		//foregroundPanel.add(testing);
 		
+		//add the Desktop layout to handle inventory, shops and messages.
+		allTheWindows = new JDesktopPane();
+		allTheWindows.setPreferredSize(new Dimension(800, 600));
+		allTheWindows.setBounds(0, 0, 800, 600);
+		allTheWindows.setOpaque(false);
+		thePane.add(allTheWindows, new Integer(2));
+		
+		
 		//set up the main panel
 		mainPanel = new JPanel();
 		mainPanel.setPreferredSize(new Dimension(800, 600));
@@ -122,9 +137,8 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 		writer = new WriteXMLFile();
 		reader = new ReadXMLFile();
 		//loadSave= sg.loadGame(this);
-		//if (loadSave == false){
-			p = new Player(this);
-		//}
+
+		p = new Player(this);
 		
 		//start main classes
 		
@@ -173,6 +187,7 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 		
 		this.addKeyListener(this);
 		this.addMouseListener(this);
+		this.addWindowListener(this);
 		location = "Map";
 		movable = true;
 		
@@ -184,11 +199,15 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		
-		reader.loadGame(this);
+		//reader.loadGame(this);
 	}
 	
-	public static void main(String[] args){
-		new MainClass().start();
+	public static void main( final String[] args){
+		SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new MainClass().start();
+            }
+        });
 	}
 	
 	public void start(){
@@ -254,6 +273,15 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 			
 			sb.update(this);
 			bb.update(this);
+			
+			if (allTheWindows.getSelectedFrame() == null && isActive()){
+				//System.out.println(allTheWindows.getSelectedFrame());
+				this.requestFocus();
+			}
+			
+			//System.out.println(this.isStoreOpen());
+			
+			//System.out.println(this.isFocusOwner());
 			
 			//main thread
 			this.repaint();
@@ -357,7 +385,7 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 		this.yPos = i;
 	}
 	
-	public Player getPlayer(){
+	public static Player getPlayer(){
 		return p;
 	}
 	
@@ -399,6 +427,69 @@ public class MainClass extends JFrame implements Runnable, KeyListener, MouseLis
 	
 	public BottomBar getBottomBar(){
 		return bb;
+	}
+	
+	public JDesktopPane getATW(){
+		return allTheWindows;
+	}
+
+	public static boolean isStoreOpen() {
+		return storeOpen;
+	}
+
+	public void setStoreOpen(boolean storeOpen) {
+		MainClass.storeOpen = storeOpen;
+	}
+
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+		this.setActive(true);
+		//System.out.println("activated");
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+		this.setActive(false);
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 }

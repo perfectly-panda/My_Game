@@ -27,6 +27,7 @@ public class Mouse extends Monster{
 			
 			//create character image class
 			this.charClass = new CharClass(mc.getMapTiles().getSubimage(75, 25, 25, 25));
+			charClass.setToolTipText("<html>Mouse<br>Level 1</html>");
 			
 			this.setEImage("/Resources/Mouse.png");
 			

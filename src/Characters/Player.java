@@ -2,19 +2,14 @@ package Characters;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import Cards.Block;
 import Cards.Kick;
 import Cards.Punch;
-import Items.Inventory;
+import Inventory.Equipment;
+import Inventory.PlayerMainInventory;
 import MainFiles.MainClass;
-
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 public class Player extends Character implements ActionListener, Serializable{
 	
@@ -26,7 +21,9 @@ public class Player extends Character implements ActionListener, Serializable{
 	private int cardsPerTurn;
 	private int currentXP;
 	private int currentGold;
-	private Inventory pInventory;
+	
+	private static PlayerMainInventory pInventory;
+	private static Equipment pEquipment;
 	
 	public Player(MainClass mc){
 		this.setTotalHP(25);
@@ -41,11 +38,13 @@ public class Player extends Character implements ActionListener, Serializable{
 		
 		this.setEImage("/Resources/Player.png");
 		this.charClass = new CharClass(mc.getMapTiles().getSubimage(0, 25, 25, 25));
+		charClass.setToolTipText("Me!");
 		this.charEncClass = new CharEncounterClass(this.getEImage());
 		
 		this.setCExit(true);
 		
-		pInventory = new Inventory(6);
+		pInventory = new PlayerMainInventory(mc);
+		//mc.getATW().add(pInventory.getMainFrame());
 		
 		createNewDeck();
 	}
@@ -168,47 +167,7 @@ public class Player extends Character implements ActionListener, Serializable{
 		//System.out.println(this.currentGold);
 	}
 	
-	public String serializePlayer(){
-		String serializedObject = "";
-
-		 // serialize the object
-		 try {
-		     ByteArrayOutputStream bo = new ByteArrayOutputStream();
-		     ObjectOutputStream so = new ObjectOutputStream(bo);
-		     so.writeObject(this.pInventory);
-		     so.flush();
-		     serializedObject = bo.toString();
-		 } catch (Exception e) {
-		     System.out.println(e);
-		     System.exit(1);
-		 }
-		// encrypt data on your side using BASE64
-		 String  bytesEncoded = Base64.encode(serializedObject.getBytes());
-		 return bytesEncoded;
-	}
-	
-	public Player deserializePlayer(String s, MainClass mc){
-		try {
-
-		     byte b[]= Base64.decode(s);
-		     //byte b[] = valueDecoded.getBytes(); 
-		     ByteArrayInputStream bi = new ByteArrayInputStream(b);
-		     ObjectInputStream si = new ObjectInputStream(bi);
-		     Player valueDecoded = (Player) si.readObject();
-		     System.out.println("player decoded");
-		     return valueDecoded;
-		 } catch (Exception e) {
-			 
-			 System.out.println("player not decoded");
-		     System.out.println(e);
-		     System.exit(1);
-		     Player obj = new Player(mc);
-		     return obj;
-		 }
-
-	}
-	
-	public Inventory getInv(){
+	public static PlayerMainInventory getInv(){
 		return pInventory;
 	}
 

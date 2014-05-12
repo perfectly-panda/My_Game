@@ -4,18 +4,17 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.io.Serializable;
+import java.awt.event.MouseEvent;
 
+import javax.swing.SwingUtilities;
+
+import Characters.Player;
 import MainFiles.BufferedImageLoader;
 import MainFiles.ImageShowingComponent;
 import MainFiles.MainClass;
 
-public class Item implements Serializable{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class Item{
+
 	
 	
 	private String itemName;
@@ -27,6 +26,7 @@ public class Item implements Serializable{
 	private Image itemImage;
 	
 	public InventoryClass invClass;
+
 	
 	public BufferedImageLoader bil = new BufferedImageLoader();
 	
@@ -37,6 +37,8 @@ public class Item implements Serializable{
 		
 		this.setCost(0);
 		this.setValue(0);
+		
+		//System.out.println(MainClass.isStoreOpen());
 		
 		this.setItemImage(bil.loadImage("/Resources/itemIcons/blank.png"));
 		
@@ -84,45 +86,74 @@ public class Item implements Serializable{
 		this.value = value;
 	}
 	
-	public void buyItem(MainClass mc){
-		if (mc.getPlayer().getCurrentGold() >= this.getCost()){
-			mc.getPlayer().setCurrentGold(mc.getPlayer().getCurrentGold() - this.getCost());
-			for (int i = 0; i < 6; i++){
-				if (mc.getPlayer().getInv().getInventorySlotName(i) == "Items.Item"){
-					//System.out.println("adding in slot "+ i);
-					mc.getPlayer().getInv().setInventorySlot(this, i);
-					mc.getPlayer().getInv().getInventorySlot(i).setCurrentStack(mc.getPlayer().getInv().getInventorySlot(i).getCurrentStack() +1);
-					mc.getBottomBar().updateItem(i, mc);
-					i=10;
-				}
-				else if (mc.getPlayer().getInv().getInventorySlotName(i) == this.getItemName() &&
-					mc.getPlayer().getInv().getInventorySlot(i).getCurrentStack() < mc.getPlayer().getInv().getInventorySlot(i).getMaxStack()){
+	public Item copyItem(){
+		return new Item();
+	}
+	
+	public void buyItem(){
+		if (MainClass.getPlayer().getCurrentGold() >= this.getCost()){
+			MainClass.getPlayer().setCurrentGold(MainClass.getPlayer().getCurrentGold() - this.getCost());
+			getItem();
+		}
+	}
+	
+	public void getItem(){
+		MainClass.getPlayer();
+		for (int i = 0; i < Player.getInv().getInventorySize(); i++){
+			MainClass.getPlayer();
+			if (Player.getInv().getInventorySlotName(i) == "Items.Item"){
+				MainClass.getPlayer();
+				Player.getInv().setInventorySlot(this.copyItem(), i);
+				MainClass.getPlayer();
+				Player.getInv().getInventorySlot(i).setCurrentStack(Player.getInv().getInventorySlot(i).getCurrentStack() +1);
+				
+				i=10000;
+			} else {
+				MainClass.getPlayer();
+				MainClass.getPlayer();
+				MainClass.getPlayer();
+				if (Player.getInv().getInventorySlotName(i) == this.getItemName() &&
+					Player.getInv().getInventorySlot(i).getCurrentStack() < Player.getInv().getInventorySlot(i).getMaxStack()){
+					MainClass.getPlayer();
 					//System.out.println("adding to slot "+ i);	
-					mc.getPlayer().getInv().getInventorySlot(i).setCurrentStack(mc.getPlayer().getInv().getInventorySlot(i).getCurrentStack() +1);
-						i=10;
+					Player.getInv().getInventorySlot(i).setCurrentStack(Player.getInv().getInventorySlot(i).getCurrentStack() +1);
+						i=10000;
 				}else if ( i == 5){
 					System.out.println("purchase failed");
-					mc.getPlayer().setCurrentGold(mc.getPlayer().getCurrentGold() + this.getCost());
-					i=10;
+					MainClass.getPlayer().setCurrentGold(MainClass.getPlayer().getCurrentGold() + this.getCost());
+					i=100000;
 				}
 			}
 		}
-		invClass.revalidate();
+		MainClass.getPlayer();
+		if(Player.getInv().getMainFrame() != null){
+			MainClass.getPlayer();
+			//System.out.println("not null");
+			Player.getInv().reloadInventory();
+		}
 	}
 	
-	public void removePlayerItem(MainClass mc, Item item){
+	public void removePlayerItem(){
 		//System.out.println("remove item" + item);
 		Item b = new Item();
-		if(item.getItemName() != "Items.Item"){
-			//System.out.println("remove item");
-			for (int i = 5; i > -1; i--){
-				//System.out.println("inside for loop");
-				if (mc.getPlayer().getInv().getInventorySlotName(i) == item.getItemName() &&
-						mc.getPlayer().getInv().getInventorySlot(i).getCurrentStack() > 0){
-							mc.getPlayer().getInv().getInventorySlot(i).setCurrentStack(mc.getPlayer().getInv().getInventorySlot(i).getCurrentStack() -1);
-							if (mc.getPlayer().getInv().getInventorySlot(i).getCurrentStack() == 0){
-								mc.getPlayer().getInv().setInventorySlot(b, i);
-								mc.getBottomBar().updateItem(i, mc);
+		//System.out.println(play);
+		if(this.getItemName() != "Items.Item"){
+			MainClass.getPlayer();
+			//System.out.println(mc.toString());
+			for (int i = Player.getInv().getInventorySize()-1; i >= 0; i--){
+				MainClass.getPlayer();
+				MainClass.getPlayer();
+				if (Player.getInv().getInventorySlotName(i) == this.getItemName() &&
+						Player.getInv().getInventorySlot(i).getCurrentStack() > 0){
+							MainClass.getPlayer();
+					//System.out.println(i);
+					Player.getInv().getInventorySlot(i).setCurrentStack(Player.getInv().getInventorySlot(i).getCurrentStack() -1);
+							MainClass.getPlayer();
+							if (Player.getInv().getInventorySlot(i).getCurrentStack() == 0){
+								MainClass.getPlayer();
+								Player.getInv().setInventorySlot(b, i);
+								MainClass.getPlayer();
+								Player.getInv().reloadInventory();
 							}
 							i=-10;
 					}
@@ -130,9 +161,17 @@ public class Item implements Serializable{
 		}
 	}
 	
-	public void useItem(MainClass mc){
-		this.removePlayerItem(mc, this);
-		invClass.revalidate();
+	public void useItem(){
+		this.removePlayerItem();
+		MainClass.getPlayer();
+		Player.getInv().reloadInventory();
+	}
+	
+	public void sellItem(){
+		this.removePlayerItem();
+		MainClass.getPlayer();
+		Player.getInv().reloadInventory();
+		MainClass.getPlayer().setCurrentGold(MainClass.getPlayer().getCurrentGold() + this.getValue());
 	}
 
 	public Image getItemImage() {
@@ -142,33 +181,75 @@ public class Item implements Serializable{
 	public void setItemImage(Image itemImage) {
 		this.itemImage = itemImage;
 	}
+	
+	public InventoryClass getInvClass(){
+		return invClass;
+	}
 
 	@SuppressWarnings("serial")
 	public class InventoryClass extends ImageShowingComponent{
+		boolean click;
+		
 		InventoryClass(){
 		}
 		
-		InventoryClass(Image i){
+		public InventoryClass(Image i){
 			this.setImage(i);
 			this.setPreferredSize(this.getPreferredSize());
 			this.setMaximumSize(this.getPreferredSize());
 			this.setLayout(new GridLayout(1,1));
 			this.setOpaque(true);
 			this.setVisible(true);
-			this.addMouseListener(this);
+
 			//this.setBorder(BorderFactory.createLineBorder(Color.black));
 			//System.out.println(this);
 		}
 		
-		  public void paintComponent(Graphics g) {
-			  super.paintComponent(g);
-			  g.drawImage(this.getImage(), 0, 0, null);
-			  g.setColor(Color.white);
-			  String s = String.valueOf(getCurrentStack());
-					if (getCurrentStack() != 0){
-						g.drawString(s, 45, 30);
-					}
+	  public void paintComponent(Graphics g) {
+		  super.paintComponent(g);
+		  g.drawImage(this.getImage(), 0, 0, null);
+		  g.setColor(Color.white);
+		  String s = String.valueOf(getCurrentStack());
+				if (getCurrentStack() != 0){
+					g.drawString(s, 45, 30);
+				}
+	  }
+	  
+	  
+	  
+	  @Override
+		public void mousePressed(MouseEvent arg0) {
+		  click = true;
+		  checkClick();
+		}
+	  
+	  @Override
+		public void mouseReleased(MouseEvent arg0) {
+			click = false;			
+		}
+	  
+	  private void checkClick(){
+		  if (click){
+			  //System.out.println(mc);
+			  if (getItemName() != "Items.Item"){
+				  //use item in the inventory
+				  if(SwingUtilities.getAncestorNamed("playerMainInventory", this) != null){
+					 if(MainClass.isStoreOpen()){
+						 //System.out.println("store open");
+						 sellItem();
+					 }else{
+						 useItem();
+					 }
+				  }else if(SwingUtilities.getAncestorNamed("storeMainInventory", this) != null){
+					  //useItem();
+					  buyItem();
+					  //System.out.println("in the store");
+				  }
+				  //System.out.println(SwingUtilities.getAncestorNamed("playerMainInventory", this));
+				  click = false;
+			  }
 		  }
+	  }
 	}
 	
 }

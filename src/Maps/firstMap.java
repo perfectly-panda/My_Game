@@ -1,9 +1,12 @@
 package Maps;
 
 import Characters.Bunny;
+import Characters.Monster;
 import Characters.Mouse;
-import Items.BasicPotion;
-import Items.Inventory;
+import Characters.ShopKeep;
+import Inventory.StoreInventory;
+import Items.Potions.MediumPotion;
+import Items.Potions.SmallPotion;
 import MainFiles.MainClass;
 import MainFiles.MapHandler;
 import Tiles.Tiles;
@@ -237,17 +240,23 @@ public class firstMap extends TheMap {
 
 	public void onLoad(MapHandler mh, MainClass mc){
 		//System.out.println("map 1");
-		Inventory inv = new Inventory(1);
-		BasicPotion p = new BasicPotion();
-		inv.setInventorySlot(p, 0);
+		StoreInventory inv = new StoreInventory(2, mc);
+		SmallPotion pS = new SmallPotion();
+		MediumPotion pM = new MediumPotion();
+		inv.setInventorySlot(pS, 0);
+		inv.setInventorySlot(pM, 1);
 		theTile[2][2].setChar1(new Bunny(mc));
 			theTile[2][2].getChar1().setCurTileX(2);
 			theTile[2][2].getChar1().setCurTileY(2);
-			mh.setMonster(0, theTile[2][2].getChar1());
+			mh.setMonster(0, (Monster) theTile[2][2].getChar1());
 		theTile[10][2].setChar1(new Mouse(mc));
 			theTile[10][2].getChar1().setCurTileX(10);
 			theTile[10][2].getChar1().setCurTileY(2);
-			mh.setMonster(1, theTile[10][2].getChar1());
-		//mh.npcs[0] = new ShopKeep(inv, "Bob", mc);
+			mh.setMonster(1, (Monster) theTile[10][2].getChar1());
+		theTile[6][6].setChar1(new ShopKeep(inv, "Bob", mc));
+			theTile[6][6].getChar1().setCurTileX(6);
+			theTile[6][6].getChar1().setCurTileY(6);
+			theTile[6][6].getChar1().getCharClass().setToolTipText("<html>Bob is a big, fat<br>meanie pants</html>");
+			//mh.setNPC(0, (NPC) theTile[6][6].getChar1());
 	}
 }

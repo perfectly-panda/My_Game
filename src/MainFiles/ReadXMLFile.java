@@ -8,6 +8,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
+import Characters.Player;
 import Items.Item;
 
 import java.io.File;
@@ -46,13 +47,13 @@ public class ReadXMLFile {
  
 			Element eElement = (Element) nNode;
  
-			mc.getPlayer().setTotalHP(Integer.parseInt(eElement.getElementsByTagName("Total_HP").item(0).getTextContent()));
-			mc.getPlayer().setCurrentHP(Integer.parseInt(eElement.getElementsByTagName("Current_HP").item(0).getTextContent()));
-			mc.getPlayer().setAttack(Integer.parseInt(eElement.getElementsByTagName("Attack").item(0).getTextContent()));
-			mc.getPlayer().setDefence(Integer.parseInt(eElement.getElementsByTagName("Defence").item(0).getTextContent()));
-			mc.getPlayer().setCardsPerTurn(Integer.parseInt(eElement.getElementsByTagName("Cards_per_Turn").item(0).getTextContent()));
-			mc.getPlayer().setLevel(Integer.parseInt(eElement.getElementsByTagName("Level").item(0).getTextContent()));
-			mc.getPlayer().setCurrentGold(Integer.parseInt(eElement.getElementsByTagName("Gold").item(0).getTextContent()));
+			MainClass.getPlayer().setTotalHP(Integer.parseInt(eElement.getElementsByTagName("Total_HP").item(0).getTextContent()));
+			MainClass.getPlayer().setCurrentHP(Integer.parseInt(eElement.getElementsByTagName("Current_HP").item(0).getTextContent()));
+			MainClass.getPlayer().setAttack(Integer.parseInt(eElement.getElementsByTagName("Attack").item(0).getTextContent()));
+			MainClass.getPlayer().setDefence(Integer.parseInt(eElement.getElementsByTagName("Defence").item(0).getTextContent()));
+			MainClass.getPlayer().setCardsPerTurn(Integer.parseInt(eElement.getElementsByTagName("Cards_per_Turn").item(0).getTextContent()));
+			MainClass.getPlayer().setLevel(Integer.parseInt(eElement.getElementsByTagName("Level").item(0).getTextContent()));
+			MainClass.getPlayer().setCurrentGold(Integer.parseInt(eElement.getElementsByTagName("Gold").item(0).getTextContent()));
 		}
 	}
 	
@@ -78,12 +79,12 @@ public class ReadXMLFile {
 			}
 			
 			mc.getMapHandler().setCurMap(Integer.parseInt(eElement.getElementsByTagName("CurrentMap").item(0).getTextContent()), mc);
-			mc.getMapHandler().maps.get(mc.getMapHandler().getCurMap()).theTile[Integer.parseInt(eElement.getElementsByTagName("PlayerX").item(0).getTextContent())][Integer.parseInt(eElement.getElementsByTagName("PlayerY").item(0).getTextContent())].setChar1(mc.getPlayer());	
+			mc.getMapHandler().maps.get(mc.getMapHandler().getCurMap()).theTile[Integer.parseInt(eElement.getElementsByTagName("PlayerX").item(0).getTextContent())][Integer.parseInt(eElement.getElementsByTagName("PlayerY").item(0).getTextContent())].setChar1(MainClass.getPlayer());	
 			
 			mc.getMapHandler().maps.get(mc.getMapHandler().getCurMap()).onLoad(mc.getMapHandler(), mc);
-			mc.getPlayer().setCurTileX(Integer.parseInt(eElement.getElementsByTagName("PlayerX").item(0).getTextContent()));
-			mc.getPlayer().setCurTileY(Integer.parseInt(eElement.getElementsByTagName("PlayerY").item(0).getTextContent()));
-			mc.getMapHandler().updateCamera(mc.getPlayer());
+			MainClass.getPlayer().setCurTileX(Integer.parseInt(eElement.getElementsByTagName("PlayerX").item(0).getTextContent()));
+			MainClass.getPlayer().setCurTileY(Integer.parseInt(eElement.getElementsByTagName("PlayerY").item(0).getTextContent()));
+			mc.getMapHandler().updateCamera(MainClass.getPlayer());
 			
 			mc.getMapHandler().revalidate();
 		}
@@ -103,12 +104,12 @@ public class ReadXMLFile {
 			 
 			Element eElement = (Element) nNode;
 
-			if (eElement.getElementsByTagName("item").item(temp).getTextContent() != "Empty Spot"){
+			if (eElement.getElementsByTagName("item").item(temp).getTextContent() != "Items.Item"){
 				Class<?> clazz = Class.forName(eElement.getElementsByTagName("item").item(temp).getTextContent());
-				Constructor<?> constructor = clazz.getConstructor();
-				Object instance = constructor.newInstance();
+				Constructor<?> constructor = clazz.getConstructor(MainClass.class);
+				Object instance = constructor.newInstance(mc);
 				
-				mc.getPlayer().getInv().setInventorySlot((Item) instance, temp);
+				Player.getInv().setInventorySlot((Item) instance, temp);
 			}
 		}
 	}
